@@ -47,6 +47,7 @@ public class BusPredictionAction extends Action {
      * @reurn List of routes
      */
     private List<RouteOfStop> getRoutes(String stopId) {
+        return null;
 
     }
 

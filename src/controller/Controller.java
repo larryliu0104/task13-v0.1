@@ -27,7 +27,7 @@ public class Controller extends HttpServlet {
 
 		Model model;
 		try {
-			model = new Model(getServletConfig());
+			//model = new Model(getServletConfig());
 
 //			try {
 //				if (model.getEmployeeDAO().getCount() == 0) {
@@ -41,6 +41,7 @@ public class Controller extends HttpServlet {
 //				}
 //			}
 
+			Log.e("Controller", "init");
 
 			Action.add(new InitializeBusInfoAction());
 			Action.add(new NearbyAction());
@@ -98,13 +99,10 @@ public class Controller extends HttpServlet {
 				Controller.class.getName() + ".sendToNextPage(\"" + nextPage + "\"): invalid extension.");
 
 	}
-
 	private String getActionName(String path) {
 		int slash = path.lastIndexOf('/');
 		return path.substring(slash + 1);
 	}
-
-
 
 }
 

@@ -15,6 +15,15 @@ public class RouteOfStop {
         setStopId(stopId);
     }
 
+    public RouteOfStop(String stopId, String stopName, String direction, String routeId, double latitude, double longitude) {
+        this.stopId = stopId;
+        this.stopName = stopName;
+        this.direction = direction;
+        this.routeId = routeId;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public String getStopId() {
         return stopId;
     }
