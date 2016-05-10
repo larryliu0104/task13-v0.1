@@ -10,7 +10,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class BusPredictionAction extends Action {
     private static final String ACTION_NAME = "busPrediction.do";
@@ -48,20 +53,32 @@ public class BusPredictionAction extends Action {
      * @param routes
      * @return List of
      */
-    private List<Bus> getPredictedBuses(String stopId, List<RouteOfStop> routes) {
-
+    private List<Bus> getPredictedBuses(String stopId, List<RouteOfStop> routes) throws MalformedURLException {
+        List<Bus> busList = new ArrayList<>();
+        for (RouteOfStop route : routes) {
+            String routeId = route.getRouteId();
+            Bus newBus = getBusInfo(getUrl(routeId, stopId));
+            busList.add(newBus);
+        }
+        return busList;
     }
 
-    private int getWaitTime(String stopId, String routeId) {
-
+    private long getWaitTime(Bus bus) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm", Locale.US);
+        Date curTime = dateFormat.parse(bus.getCurrentTime());
+        Date predictTime = dateFormat.parse(bus.getPredictTime());
+        return predictTime.getTime() - curTime.getTime();
     }
 
-    private int getPredictTime(String stopId, String routeId) {
-
+    private Bus getBusInfo(String apiAddress) throws MalformedURLException {
+        String response = getHttpResponse(apiAddress);
+        Gson gson = new Gson();
+        Bus bus = gson.fromJson(response, Bus.class);
+        return bus;
     }
 
-    private Bus getHttpResponse(String dns, String path) throws MalformedURLException {
-        String submitString = "http://" + dns + path;
+    private String getHttpResponse(String apiAddress) throws MalformedURLException {
+        String submitString = apiAddress;
         URL url = new URL(submitString);
         HttpURLConnection httpConnection = null;
 
@@ -69,10 +86,11 @@ public class BusPredictionAction extends Action {
         while (true) {
             try {
                 while (responseCode != HttpURLConnection.HTTP_OK) {
-                    Thread.sleep(2);
+                    Thread.sleep(1);
                     httpConnection = (HttpURLConnection) url.openConnection();
                     responseCode = httpConnection.getResponseCode();
                 }
+
                 BufferedReader br = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
                 String response;
                 StringBuilder builder = new StringBuilder();
@@ -80,15 +98,16 @@ public class BusPredictionAction extends Action {
                 while ((response = br.readLine()) != null) {
                     builder.append(response);
                 }
-                Gson gson = new Gson();
-                Bus bus = gson.fromJson(builder.toString(), Bus.class);
-
-                return bus;
-
             } catch (Exception e) {
                 System.out.println("Response Code:" + responseCode);
                 System.out.println("Try Again");
             }
         }
+    }
+
+    private String getUrl(String routeId, String stopId) {
+        return String.format("http://truetime.portauthority" +
+                        ".org/bustime/api/v2/getpredictions?key=8u3mEzmXtEHmZMDMY4js4XGre&format=json&rt=%s&stpid=%s",
+                routeId, stopId);
     }
 }
