@@ -1,6 +1,9 @@
 package controller;
 
+import DataBean.Stop;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public class NearbyAction extends Action {
     private static final String ACTION_NAME = "nearby.do";
@@ -16,4 +19,10 @@ public class NearbyAction extends Action {
         return NEARBY_JSP;
 
     }
+
+    private List<Stop> getNearbyStops(String stopId) {
+
+    }
+
+    private
 }

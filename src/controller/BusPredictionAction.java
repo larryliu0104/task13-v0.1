@@ -21,6 +21,7 @@ import java.util.Locale;
 public class BusPredictionAction extends Action {
     private static final String ACTION_NAME = "busPrediction.do";
     private static final String BUS_PREDICTION_JSP = "busPrediction.jsp";
+    private static final String BUS_LIST_JSP = "busList.jsp";
 
     @Override
     public String getName() {
@@ -29,14 +30,22 @@ public class BusPredictionAction extends Action {
 
     @Override
     public String perform(HttpServletRequest request) {
+        String stopId = request.getParameter("stopid");
+        String busInfo = request.getParameter("businfo");
+        List<Bus> predictedBuses = null;
+        List<RouteOfStop> routes = getRoutes(stopId);
         try {
-            String stopId = request.getParameter("stopid");
-            List<Bus> predictedBuses = getPredictedBuses(stopId);
-            return BUS_PREDICTION_JSP;
-        } catch (Exception e) {
+            predictedBuses = getPredictedBuses(stopId);
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
+        if (busInfo == null) {
+            request.setAttribute("buses", routes);
+            return BUS_LIST_JSP;
+        }
+        request.setAttribute("predicts", predictedBuses);
+        return BUS_PREDICTION_JSP;
     }
 
     /**
