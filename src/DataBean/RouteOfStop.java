@@ -3,7 +3,7 @@ package DataBean;
 /**
  * @author Siqi Wang siqiw1 on 5/10/16.
  */
-public class Stop {
+public class RouteOfStop {
     private String stopId;
     private String stopName;
     private String direction;
@@ -11,7 +11,7 @@ public class Stop {
     private double latitude;
     private double longitude;
 
-    public Stop(String stopId) {
+    public RouteOfStop(String stopId) {
         setStopId(stopId);
     }
 
