@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * @author Siqi Wang siqiw1 on 5/10/16.
  */
-public class Bus {
+public class Bus implements Comparable<Bus> {
     @SerializedName("rtdd")
     private String routeId;
 
@@ -17,6 +17,8 @@ public class Bus {
 
     @SerializedName("rtdir")
     private String direction;
+
+    private long waitTime;
 
     public Bus(String routeId) {
         setRouteId(routeId);
@@ -53,4 +55,19 @@ public class Bus {
     public void setDirection(String direction) {
         this.direction = direction;
     }
+
+    public long getWaitTime() {
+        return waitTime;
+    }
+
+    public void setWaitTime(long waitTime) {
+        this.waitTime = waitTime;
+    }
+
+    @Override
+    public int compareTo(Bus o) {
+        return this.waitTime - o.waitTime > 0 ? 1 : -1;
+    }
+
+
 }

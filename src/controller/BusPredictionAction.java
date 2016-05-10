@@ -13,9 +13,11 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
 
 public class BusPredictionAction extends Action {
     private static final String ACTION_NAME = "busPrediction.do";
@@ -28,12 +30,14 @@ public class BusPredictionAction extends Action {
 
     @Override
     public String perform(HttpServletRequest request) {
-        String stopId = request.getParameter("stopid");
-        List<RouteOfStop> routesOfStop = getRoutes(stopId);
-        for (RouteOfStop routeOfStop : routesOfStop) {
-
+        try {
+            String stopId = request.getParameter("stopid");
+            List<Bus> predictedBuses = getPredictedBuses(stopId);
+            return BUS_PREDICTION_JSP;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return BUS_PREDICTION_JSP;
+
     }
 
     /**
@@ -50,23 +54,31 @@ public class BusPredictionAction extends Action {
      * Get all buses for each route passing by the stop, sort by arriving time
      *
      * @param stopId
-     * @param routes
-     * @return List of
+     * @return
      */
-    private List<Bus> getPredictedBuses(String stopId, List<RouteOfStop> routes) throws MalformedURLException {
+    private List<Bus> getPredictedBuses(String stopId) throws MalformedURLException {
+        List<RouteOfStop> routes = getRoutes(stopId);
         List<Bus> busList = new ArrayList<>();
         for (RouteOfStop route : routes) {
             String routeId = route.getRouteId();
             Bus newBus = getBusInfo(getUrl(routeId, stopId));
+            newBus.setWaitTime(getWaitTime(newBus));
             busList.add(newBus);
         }
+        Collections.sort(busList);
         return busList;
     }
 
-    private long getWaitTime(Bus bus) throws ParseException {
+    private long getWaitTime(Bus bus) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm", Locale.US);
-        Date curTime = dateFormat.parse(bus.getCurrentTime());
-        Date predictTime = dateFormat.parse(bus.getPredictTime());
+        Date curTime = null;
+        Date predictTime = null;
+        try {
+            curTime = dateFormat.parse(bus.getCurrentTime());
+            predictTime = dateFormat.parse(bus.getPredictTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return predictTime.getTime() - curTime.getTime();
     }
 
