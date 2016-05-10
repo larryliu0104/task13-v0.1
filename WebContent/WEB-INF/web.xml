@@ -30,6 +30,6 @@
 
 
 	<welcome-file-list>
-		<welcome-file>   helloworld.do                    </welcome-file>
+		<welcome-file>   initializBusInfoAction.do           </welcome-file>
 	</welcome-file-list>
 </web-app>
