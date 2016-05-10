@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
 
 public class BusPredictionAction extends Action {
     private static final String ACTION_NAME = "busPrediction.do";
@@ -47,8 +46,7 @@ public class BusPredictionAction extends Action {
      * @reurn List of routes
      */
     private List<RouteOfStop> getRoutes(String stopId) {
-        return null;
-
+        return InitializeBusInfoAction.stopAndRouteMap.get((stopId));
     }
 
     /**
@@ -70,6 +68,7 @@ public class BusPredictionAction extends Action {
         return busList;
     }
 
+
     private long getWaitTime(Bus bus) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm", Locale.US);
         Date curTime = null;
@@ -83,12 +82,14 @@ public class BusPredictionAction extends Action {
         return predictTime.getTime() - curTime.getTime();
     }
 
+
     private Bus getBusInfo(String apiAddress) throws MalformedURLException {
         String response = getHttpResponse(apiAddress);
         Gson gson = new Gson();
         Bus bus = gson.fromJson(response, Bus.class);
         return bus;
     }
+
 
     private String getHttpResponse(String apiAddress) throws MalformedURLException {
         String submitString = apiAddress;
