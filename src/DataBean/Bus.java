@@ -1,12 +1,21 @@
 package DataBean;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Siqi Wang siqiw1 on 5/10/16.
  */
 public class Bus {
+    @SerializedName("rtdd")
     private String routeId;
+
+    @SerializedName("tmstmp")
     private String currentTime;
+
+    @SerializedName("prdtm")
     private String predictTime;
+
+    @SerializedName("rtdir")
     private String direction;
 
     public Bus(String routeId) {
