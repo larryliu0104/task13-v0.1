@@ -9,10 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.genericdao.DAOException;
-import org.genericdao.RollbackException;
-import org.genericdao.Transaction;
-
 import model.Model;
 
 //import controller.customer.ChangeCustomerPasswordAction;
@@ -46,17 +42,11 @@ public class Controller extends HttpServlet {
 //			}
 
 
-			Action.add(new HelloWorldAction(model));
-//			Action.add(new CreateCustomerAccountAction(model));
-//			Action.add(new CreateEmployeeAccountAction(model));
-//			Action.add(new CreateFundAction(model));
-//			Action.add(new SearchCustomerAction(model));
-//			Action.add(new DepositCheckAction(model));
-//			Action.add(new ViewCustomerTransactionHistoryAction(model));
-//			Action.add(new EmployeeViewCustomerProfileAction(model));
-//			Action.add(new ViewAllHistoryAction(model));
+			Action.add(new InitializeBusInfoAction());
+			Action.add(new NearbyAction());
+			Action.add(new BusPredictionAction());
 
-		} catch (DAOException e) {
+		} catch (Exception e) {
 
 			e.printStackTrace();
 		}

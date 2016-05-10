@@ -2,9 +2,9 @@ package controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class NearbyAction extends Action {
-    private static final String ACTION_NAME = "nearby.do";
-    private static final String NEARBY_JSP = "nearby.jsp";
+public class BusPredictionAction extends Action{
+    private static final String ACTION_NAME = "busPrediction.do";
+    private static final String BUS_PREDICTION_JSP = "busPrediction.jsp";
 
     @Override
     public String getName() {
@@ -13,7 +13,6 @@ public class NearbyAction extends Action {
 
     @Override
     public String perform(HttpServletRequest request) {
-        return NEARBY_JSP;
-
+        return BUS_PREDICTION_JSP;
     }
 }

@@ -1,11 +1,10 @@
 package controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import util.Log;
 
 import javax.servlet.http.HttpServletRequest;
-
-import util.Log;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Action {
 	private static final String TAG = "ACTION";
