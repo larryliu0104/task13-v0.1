@@ -8,6 +8,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +37,14 @@ public class NearbyAction extends Action {
 
     private List<Stop> getAllStops() {
         List<Stop> allStops = new ArrayList<>();
-        JsonArray allStopsJson = (JsonArray) new JsonParser().parse("all-stops.json");
+        String stopsJsonArray = null;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(NearbyAction.class.getResourceAsStream
+                ("all-stops.json")))) {
+            stopsJsonArray = br.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JsonArray allStopsJson = (JsonArray) new JsonParser().parse(stopsJsonArray);
         for (JsonElement stopJson : allStopsJson) {
             Gson gson = new Gson();
             Stop stop = gson.fromJson(stopJson, Stop.class);
