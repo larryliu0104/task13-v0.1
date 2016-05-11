@@ -64,13 +64,13 @@ public class BusPredictionAction extends Action {
      * @param stopId
      * @return
      */
-    private List<Bus> getPredictedBuses(String stopId) throws MalformedURLException {
+    List<Bus> getPredictedBuses(String stopId) throws MalformedURLException {
         List<RouteOfStop> routes = getRoutes(stopId);
         List<Bus> busList = new ArrayList<>();
         for (RouteOfStop route : routes) {
             String routeId = route.getRouteId();
             Bus newBus = getBusInfo(getUrl(routeId, stopId));
-            newBus.setWaitTime(getWaitTime(newBus));
+            newBus.setWaitTime(getWaitTime(newBus) / 60);
             busList.add(newBus);
         }
         Collections.sort(busList);
