@@ -6,10 +6,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import DataBean.RouteOfStop;
+import DataBean.Stop;
+
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,6 +26,7 @@ import util.Log;
 public class InitializeBusInfoAction extends Action {
 	// key stopId, value list of routes
 	public static HashMap<String, ArrayList<RouteOfStop>> stopAndRouteMap = new HashMap<>();
+	List<Stop> allStopsList = new ArrayList<>();
 	private static final String ACTION_NAME = "initializBusInfoAction.do";
 	private static final String JSP_NAME = "helloworld.jsp";
 
@@ -54,15 +59,15 @@ public class InitializeBusInfoAction extends Action {
 		BufferedReader br = new BufferedReader(f);
 		String currentJSONString = "";
 		while ((currentJSONString = br.readLine()) != null) {
-			JsonArray allStops = (JsonArray) new JsonParser().parse(currentJSONString);
-			for (JsonElement curr : allStops) {
-				Double lat = curr.getAsJsonObject().getAsJsonPrimitive("lat").getAsDouble();
-				Double lon = curr.getAsJsonObject().getAsJsonPrimitive("lon").getAsDouble();
-				String stopId = curr.getAsJsonObject().getAsJsonPrimitive("stpid").getAsString();
-				String stopName = curr.getAsJsonObject().getAsJsonPrimitive("stpnm").getAsString();
+			JsonArray allStopsJsonArray = (JsonArray) new JsonParser().parse(currentJSONString);
+			for (JsonElement currJsonElement : allStopsJsonArray) {
+				Double lat = currJsonElement.getAsJsonObject().getAsJsonPrimitive("lat").getAsDouble();
+				Double lon = currJsonElement.getAsJsonObject().getAsJsonPrimitive("lon").getAsDouble();
+				String stopId = currJsonElement.getAsJsonObject().getAsJsonPrimitive("stpid").getAsString();
+				String stopName = currJsonElement.getAsJsonObject().getAsJsonPrimitive("stpnm").getAsString();
 				Log.i("initInfo", "stopId: " + stopId + " , stopName: " + stopName + " lat: " + lat + " lon: " + lon);
-				String direction = curr.getAsJsonObject().getAsJsonPrimitive("dir").getAsString();
-				String routeId = curr.getAsJsonObject().getAsJsonPrimitive("rt").getAsString();
+				String direction = currJsonElement.getAsJsonObject().getAsJsonPrimitive("dir").getAsString();
+				String routeId = currJsonElement.getAsJsonObject().getAsJsonPrimitive("rt").getAsString();
 				// signature of RouteOfStop(String stopId, String stopName,
 				// String direction, String routeId, double latitude, double
 				// longitude)
@@ -78,6 +83,10 @@ public class InitializeBusInfoAction extends Action {
 					stopAndRouteMap.put(stopId, currRouteOfStopList);
 					Log.i("init", "Add stopId" + stopId + "into map");
 				}
+				// add all stops to allStopsList
+	            Gson gson = new Gson();
+	            Stop stop = gson.fromJson(currJsonElement, Stop.class);
+	            allStopsList.add(stop);
 			}
 		}
 		br.close();
